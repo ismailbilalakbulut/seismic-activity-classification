@@ -1,39 +1,39 @@
-# Derin Öğrenme Eğitimi Projeleri
+# Sismik Aktivite Sınıflandırması
 
-Bu depo, [Derin Öğrenme 2026: 100 Günlük Kamp](https://www.udemy.com/course/derin-ogrenme-bootcamp/) kapsamında verilen toplam 8 adet ödevin çözümlerini ve çalışma dosyalarını içermektedir. Süreç boyunca PyTorch kullanılarak çeşitli yapay sinir ağı mimarileri ve derin öğrenme teknikleri uygulanmıştır.
+Bu proje, Udemy platformundaki [Derin Öğrenme 2026: 100 Günlük Kamp](https://www.udemy.com/course/derin-ogrenme-bootcamp/) kapsamında geliştirilmiştir ve eğitimin ilk uygulamalı projesidir. 
 
-## 📌 İçindekiler
-1. [Ödev 1: Sismik Aktivite Sınıflandırması (Non-Linear MLP)](#ödev-1-sismik-aktivite-sınıflandırması)
-2. *Ödev 2: (İleride eklenecek)*
-3. *Ödev 3: (İleride eklenecek)*
-...
+Projenin amacı, PyTorch kullanılarak doğrusal olarak ayrılamayan (non-linear) karmaşık bir veri setini Çok Katmanlı Algılayıcı (MLP) modeli ile sınıflandırmaktır.
 
----
+## 📊 Veri Seti
+Projede sismik hareketleri temsil eden `08-seismic_activity_svm.csv` adlı veri seti kullanılmıştır.
+* **Özellikler (Features):** `underground_wave_energy` (Dalga Enerjisi) ve `vibration_axis_variation` (Titreşim Varyasyonu)
+* **Hedef (Target):** `seismic_event_detected` (0: Tespit Edilmedi, 1: Tespit Edildi)
+* **Veri Dağılımı:** 400 örneklemden oluşan veri seti görselleştirildiğinde, doğrusal bir çizgiyle ayrılamayan, iç içe geçmiş yay şeklinde bir dağılıma sahip olduğu görülmektedir.
 
-## 🛠️ Kurulum ve Bağımlılıklar
-Bu depodaki projeleri kendi bilgisayarınızda çalıştırmak için aşağıdaki kütüphanelerin kurulu olması gerekmektedir:
+## 🧠 Model Mimarisi
+Geliştirilen yapay sinir ağı modeli, aralarında doğrusal olmayan yapıyı öğrenebilmesi için ReLU aktivasyon fonksiyonları bulunan 3 Doğrusal (Linear) katmandan oluşmaktadır:
+* **Gizli Katman 1:** 2 girdi -> 10 nöron (Aktivasyon: ReLU)
+* **Gizli Katman 2:** 10 nöron -> 10 nöron (Aktivasyon: ReLU)
+* **Çıktı Katmanı:** 10 nöron -> 1 çıktı 
+
+## ⚙️ Eğitim Detayları
+* **Kayıp Fonksiyonu (Loss Function):** İkili sınıflandırma problemi olduğu için `nn.BCEWithLogitsLoss()` kullanılmıştır.
+* **Optimizasyon (Optimizer):** `Adam` algoritması tercih edilmiş olup Öğrenme Oranı (Learning Rate) `0.01` olarak belirlenmiştir.
+* **Veri Bölme:** %80 Eğitim (Train), %20 Test
+* **Epoch Sayısı:** Model toplam 260 epoch eğitilmiştir.
+
+## 📈 Sonuçlar
+Model, veri setindeki non-linear (doğrusal olmayan) karar sınırlarını çok kısa bir sürede öğrenmeyi başarmış olup, 60. epoch itibarıyla hem eğitim hem de test verisinde **%100 doğruluk (accuracy)** oranına ulaşmıştır. Aşırı öğrenme (overfitting) durumu gözlenmemiştir.
+
+Karar sınırları (decision boundaries) eğitimin sonunda kontur grafikleri (contour plot) ile görselleştirilerek modelin veriyi nasıl sınırlandırdığı incelenmiştir.
+
+## 🛠️ Kurulum ve Çalıştırma
+Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki kütüphanelerin kurulu olması gerekmektedir:
 * `torch`
 * `pandas`
 * `matplotlib`
 * `seaborn`
 * `scikit-learn`
 * `numpy`
----
 
-## 🚀 Ödevler
-
-### Ödev 1: Sismik Aktivite Sınıflandırması
-**Dosya:** [`01-NonLinearAssignment.ipynb`](./01-NonLinearAssignment.ipynb)
-
-Bu projede, doğrusal olarak ayrılamayan (non-linear) sismik aktivite verilerini sınıflandırmak için PyTorch ile çok katmanlı bir algılayıcı (MLP) geliştirilmiştir. 
-* **Veri:** `underground_wave_energy` ve `vibration_axis_variation` özellikleri kullanılarak sismik olay tespiti (0 veya 1).
-* **Mimari:** 2 Girdi -> 10 (ReLU) -> 10 (ReLU) -> 1 Çıktı
-* **Eğitim:** BCEWithLogitsLoss ve Adam optimizer (lr=0.01) ile 260 epoch.
-* **Sonuç:** Model karar sınırlarını başarıyla öğrenerek test verisinde %100 doğruluk (accuracy) oranına ulaşmıştır.
-
----
-
-### Ödev 2: (Ödevin Konusu)
-*Yeni ödev eklendiğinde buraya kısa bir özet ve dosya linki gelecek.*
-
----
+Gerekli bağımlılıkları kurduktan sonra `01-NonLinearAssignment.ipynb` dosyasını çalıştırabilirsiniz.
